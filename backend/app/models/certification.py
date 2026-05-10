@@ -13,7 +13,7 @@ class Certification(Base):
     user_profile_id: Mapped[int] = mapped_column(ForeignKey("user_profiles.id"), nullable=False)
     name: Mapped[str] = mapped_column(String(255), nullable=False)
     issuer: Mapped[str] = mapped_column(String(255), nullable=False)
-    issue_date: Mapped[date] = mapped_column(Date, nullable=False)
+    issue_date: Mapped[date | None] = mapped_column(Date)
     expiry_date: Mapped[date | None] = mapped_column(Date)
     credential_id: Mapped[str | None] = mapped_column(String(255))
     credential_url: Mapped[str | None] = mapped_column(String(500))
