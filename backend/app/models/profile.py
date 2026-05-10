@@ -1,17 +1,9 @@
-from __future__ import annotations
-
 from datetime import datetime
-from typing import TYPE_CHECKING
 
 from sqlalchemy import DateTime, String, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.database import Base
-
-if TYPE_CHECKING:
-    from app.models.certification import Certification
-    from app.models.education import Education
-    from app.models.experience import WorkExperience
 
 
 class UserProfile(Base):
@@ -29,12 +21,12 @@ class UserProfile(Base):
         DateTime, server_default=func.now(), onupdate=func.now(), nullable=False
     )
 
-    educations: Mapped[list[Education]] = relationship(
+    educations: Mapped[list["Education"]] = relationship(  # type: ignore[name-defined]  # noqa: F821
         "Education", back_populates="profile", cascade="all, delete-orphan"
     )
-    certifications: Mapped[list[Certification]] = relationship(
+    certifications: Mapped[list["Certification"]] = relationship(  # type: ignore[name-defined]  # noqa: F821
         "Certification", back_populates="profile", cascade="all, delete-orphan"
     )
-    experiences: Mapped[list[WorkExperience]] = relationship(
+    experiences: Mapped[list["WorkExperience"]] = relationship(  # type: ignore[name-defined]  # noqa: F821
         "WorkExperience", back_populates="profile", cascade="all, delete-orphan"
     )

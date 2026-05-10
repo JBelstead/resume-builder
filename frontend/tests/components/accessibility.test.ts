@@ -6,6 +6,7 @@ import PersonalInfoForm from '@/components/profile/PersonalInfoForm.vue'
 import JobDescriptionInput from '@/components/resume/JobDescriptionInput.vue'
 import ResumeHistoryList from '@/components/resume/ResumeHistoryList.vue'
 
+// @ts-expect-error — vitest-axe matchers type doesn't match MatchersObject exactly
 expect.extend(toHaveNoViolations)
 
 describe('Accessibility — WCAG 2.1 AA', () => {
