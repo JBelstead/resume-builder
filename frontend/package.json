@@ -7,7 +7,7 @@
     "build": "vue-tsc && vite build",
     "preview": "vite preview",
     "type-check": "vue-tsc --noEmit",
-    "lint": "eslint . --ext .vue,.js,.ts",
+    "lint": "eslint .",
     "test:unit": "vitest run",
     "test:unit:watch": "vitest",
     "check-bundle-size": "node scripts/check-bundle-size.mjs"
@@ -24,6 +24,7 @@
     "@vitejs/plugin-vue": "^5.2.1",
     "@vitest/coverage-v8": "^2.1.8",
     "@vue/test-utils": "^2.4.6",
+    "@typescript-eslint/parser": "^8.18.0",
     "eslint": "^9.16.0",
     "eslint-plugin-vue": "^9.32.0",
     "gzip-size": "^7.0.0",

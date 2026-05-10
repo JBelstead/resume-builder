@@ -10,7 +10,9 @@ class Education(Base):
     __tablename__ = "educations"
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    user_profile_id: Mapped[int] = mapped_column(ForeignKey("user_profiles.id"), nullable=False)
+    user_profile_id: Mapped[int] = mapped_column(
+        ForeignKey("user_profiles.id"), nullable=False
+    )
     institution: Mapped[str] = mapped_column(String(255), nullable=False)
     degree: Mapped[str] = mapped_column(String(255), nullable=False)
     field_of_study: Mapped[str | None] = mapped_column(String(255))
@@ -19,4 +21,6 @@ class Education(Base):
     gpa: Mapped[str | None] = mapped_column(String(20))
     description: Mapped[str | None] = mapped_column(Text)
 
-    profile: Mapped["UserProfile"] = relationship("UserProfile", back_populates="educations")  # noqa: F821
+    profile: Mapped["UserProfile"] = relationship(  # noqa: F821
+        "UserProfile", back_populates="educations"
+    )

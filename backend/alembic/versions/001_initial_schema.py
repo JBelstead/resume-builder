@@ -4,15 +4,17 @@ Revision ID: 001
 Revises:
 Create Date: 2026-05-10
 """
-from typing import Sequence, Union
+
+from collections.abc import Sequence
 
 import sqlalchemy as sa
+
 from alembic import op
 
 revision: str = "001"
-down_revision: Union[str, None] = None
-branch_labels: Union[str, Sequence[str], None] = None
-depends_on: Union[str, Sequence[str], None] = None
+down_revision: str | None = None
+branch_labels: str | Sequence[str] | None = None
+depends_on: str | Sequence[str] | None = None
 
 
 def upgrade() -> None:
@@ -25,14 +27,23 @@ def upgrade() -> None:
         sa.Column("github_url", sa.String(500), nullable=True),
         sa.Column("linkedin_url", sa.String(500), nullable=True),
         sa.Column("website_url", sa.String(500), nullable=True),
-        sa.Column("created_at", sa.DateTime(), server_default=sa.func.now(), nullable=False),
-        sa.Column("updated_at", sa.DateTime(), server_default=sa.func.now(), nullable=False),
+        sa.Column(
+            "created_at", sa.DateTime(), server_default=sa.func.now(), nullable=False
+        ),
+        sa.Column(
+            "updated_at", sa.DateTime(), server_default=sa.func.now(), nullable=False
+        ),
     )
 
     op.create_table(
         "educations",
         sa.Column("id", sa.Integer(), primary_key=True),
-        sa.Column("user_profile_id", sa.Integer(), sa.ForeignKey("user_profiles.id"), nullable=False),
+        sa.Column(
+            "user_profile_id",
+            sa.Integer(),
+            sa.ForeignKey("user_profiles.id"),
+            nullable=False,
+        ),
         sa.Column("institution", sa.String(255), nullable=False),
         sa.Column("degree", sa.String(255), nullable=False),
         sa.Column("field_of_study", sa.String(255), nullable=True),
@@ -45,7 +56,12 @@ def upgrade() -> None:
     op.create_table(
         "certifications",
         sa.Column("id", sa.Integer(), primary_key=True),
-        sa.Column("user_profile_id", sa.Integer(), sa.ForeignKey("user_profiles.id"), nullable=False),
+        sa.Column(
+            "user_profile_id",
+            sa.Integer(),
+            sa.ForeignKey("user_profiles.id"),
+            nullable=False,
+        ),
         sa.Column("name", sa.String(255), nullable=False),
         sa.Column("issuer", sa.String(255), nullable=False),
         sa.Column("issue_date", sa.Date(), nullable=False),
@@ -57,7 +73,12 @@ def upgrade() -> None:
     op.create_table(
         "work_experiences",
         sa.Column("id", sa.Integer(), primary_key=True),
-        sa.Column("user_profile_id", sa.Integer(), sa.ForeignKey("user_profiles.id"), nullable=False),
+        sa.Column(
+            "user_profile_id",
+            sa.Integer(),
+            sa.ForeignKey("user_profiles.id"),
+            nullable=False,
+        ),
         sa.Column("company", sa.String(255), nullable=False),
         sa.Column("role", sa.String(255), nullable=False),
         sa.Column("start_date", sa.Date(), nullable=False),
@@ -77,7 +98,9 @@ def upgrade() -> None:
         sa.Column("llm_output", sa.Text(), nullable=False),
         sa.Column("pdf_path", sa.String(1000), nullable=True),
         sa.Column("html_path", sa.String(1000), nullable=True),
-        sa.Column("created_at", sa.DateTime(), server_default=sa.func.now(), nullable=False),
+        sa.Column(
+            "created_at", sa.DateTime(), server_default=sa.func.now(), nullable=False
+        ),
     )
 
 
