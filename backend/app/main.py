@@ -13,9 +13,8 @@ from app.routers import certifications, education, experience, profile, resume
 async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     import asyncio
 
-    from alembic.config import Config
-
     from alembic import command
+    from alembic.config import Config
 
     alembic_cfg = Config("alembic.ini")
     loop = asyncio.get_event_loop()
