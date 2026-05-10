@@ -6,7 +6,7 @@ from pydantic import BaseModel, model_validator
 class ExperienceBase(BaseModel):
     company: str
     role: str
-    start_date: date
+    start_date: date | None = None
     end_date: date | None = None
     location: str | None = None
     description: str | None = None
@@ -14,7 +14,7 @@ class ExperienceBase(BaseModel):
 
     @model_validator(mode="after")
     def end_after_start(self) -> "ExperienceBase":
-        if self.end_date and self.end_date < self.start_date:
+        if self.end_date and self.start_date and self.end_date < self.start_date:
             raise ValueError("end_date must be on or after start_date")
         return self
 

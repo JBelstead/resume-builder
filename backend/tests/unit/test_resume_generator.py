@@ -1,12 +1,14 @@
 """Unit tests for ResumeGenerator."""
 
 import json
+from datetime import date
 from unittest.mock import AsyncMock, patch
 
 import pytest
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 
 from app.database import Base
+from app.models.experience import WorkExperience
 from app.models.profile import UserProfile
 from app.models.resume import Resume
 from app.services.resume_generator import ResumeBuildError, ResumeGenerator
@@ -44,6 +46,14 @@ async def db_with_profile(db_session: AsyncSession):
     db_session.add(profile)
     await db_session.commit()
     await db_session.refresh(profile)
+    exp = WorkExperience(
+        user_profile_id=profile.id,
+        company="Acme Corp",
+        role="Engineer",
+        start_date=date(2020, 1, 1),
+    )
+    db_session.add(exp)
+    await db_session.commit()
     return db_session
 
 
