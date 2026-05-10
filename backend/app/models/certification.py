@@ -1,9 +1,15 @@
+from __future__ import annotations
+
 from datetime import date
+from typing import TYPE_CHECKING
 
 from sqlalchemy import Date, ForeignKey, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.database import Base
+
+if TYPE_CHECKING:
+    from app.models.profile import UserProfile
 
 
 class Certification(Base):
@@ -18,6 +24,6 @@ class Certification(Base):
     credential_id: Mapped[str | None] = mapped_column(String(255))
     credential_url: Mapped[str | None] = mapped_column(String(500))
 
-    profile: Mapped["UserProfile"] = relationship(  # noqa: F821
+    profile: Mapped[UserProfile] = relationship(
         "UserProfile", back_populates="certifications"
     )
