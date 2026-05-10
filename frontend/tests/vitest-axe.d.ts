@@ -1,8 +1,11 @@
 export {}
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 declare module 'vitest-axe' {
-  export const toHaveNoViolations: Record<string, (...args: unknown[]) => unknown>
-  export const axe: (...args: unknown[]) => Promise<unknown>
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  export const toHaveNoViolations: Record<string, any>
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  export const axe: (...args: any[]) => Promise<any>
 }
 
 declare module 'vitest' {

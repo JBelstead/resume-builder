@@ -24,6 +24,4 @@ class Certification(Base):
     credential_id: Mapped[str | None] = mapped_column(String(255))
     credential_url: Mapped[str | None] = mapped_column(String(500))
 
-    profile: Mapped[UserProfile] = relationship(
-        "UserProfile", back_populates="certifications"
-    )
+    profile: Mapped[UserProfile] = relationship("UserProfile", back_populates="certifications")

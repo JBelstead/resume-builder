@@ -25,6 +25,4 @@ class Education(Base):
     gpa: Mapped[str | None] = mapped_column(String(20))
     description: Mapped[str | None] = mapped_column(Text)
 
-    profile: Mapped[UserProfile] = relationship(
-        "UserProfile", back_populates="educations"
-    )
+    profile: Mapped[UserProfile] = relationship("UserProfile", back_populates="educations")

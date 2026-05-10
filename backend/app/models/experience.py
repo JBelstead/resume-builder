@@ -25,6 +25,4 @@ class WorkExperience(Base):
     description: Mapped[str | None] = mapped_column(Text)
     skills: Mapped[str | None] = mapped_column(Text)
 
-    profile: Mapped[UserProfile] = relationship(
-        "UserProfile", back_populates="experiences"
-    )
+    profile: Mapped[UserProfile] = relationship("UserProfile", back_populates="experiences")
