@@ -1,14 +1,15 @@
 """Integration tests for resume history endpoints (US3)."""
 
 import json
-import pytest
 from datetime import datetime
 from pathlib import Path
-from httpx import AsyncClient, ASGITransport
-from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine, async_sessionmaker
 
-from app.main import app
+import pytest
+from httpx import ASGITransport, AsyncClient
+from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
+
 from app.database import Base, get_db
+from app.main import app
 from app.models.resume import Resume
 
 TEST_DB_URL = "sqlite+aiosqlite:///:memory:"

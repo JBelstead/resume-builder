@@ -5,7 +5,11 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.database import get_db
 from app.models.experience import WorkExperience
 from app.models.profile import UserProfile
-from app.schemas.experience import ExperienceCreate, ExperienceResponse, ExperienceUpdate
+from app.schemas.experience import (
+    ExperienceCreate,
+    ExperienceResponse,
+    ExperienceUpdate,
+)
 
 router = APIRouter(tags=["experience"])
 
@@ -30,9 +34,7 @@ async def list_experience(db: AsyncSession = Depends(get_db)) -> list[WorkExperi
 
 
 @router.post("/experience", response_model=ExperienceResponse, status_code=201)
-async def create_experience(
-    data: ExperienceCreate, db: AsyncSession = Depends(get_db)
-) -> WorkExperience:
+async def create_experience(data: ExperienceCreate, db: AsyncSession = Depends(get_db)) -> WorkExperience:
     profile = await _require_profile(db)
     entry = WorkExperience(user_profile_id=profile.id, **data.model_dump())
     db.add(entry)

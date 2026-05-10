@@ -1,11 +1,11 @@
 """Contract tests for education, certifications, and experience CRUD endpoints."""
 
 import pytest
-from httpx import AsyncClient, ASGITransport
-from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine, async_sessionmaker
+from httpx import ASGITransport, AsyncClient
+from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 
-from app.main import app
 from app.database import Base, get_db
+from app.main import app
 
 TEST_DB_URL = "sqlite+aiosqlite:///:memory:"
 
@@ -41,6 +41,7 @@ async def profile_client(client: AsyncClient):
 
 # ─── Education ───────────────────────────────────────────────────────────────
 
+
 @pytest.mark.asyncio
 async def test_list_education_requires_profile(client: AsyncClient):
     resp = await client.get("/api/education")
@@ -61,16 +62,19 @@ async def test_create_education(profile_client: AsyncClient):
 async def test_create_education_invalid_dates(profile_client: AsyncClient):
     resp = await profile_client.post(
         "/api/education",
-        json={"institution": "MIT", "degree": "BSc", "start_date": "2020-01-01", "end_date": "2019-01-01"},
+        json={
+            "institution": "MIT",
+            "degree": "BSc",
+            "start_date": "2020-01-01",
+            "end_date": "2019-01-01",
+        },
     )
     assert resp.status_code == 422
 
 
 @pytest.mark.asyncio
 async def test_update_education(profile_client: AsyncClient):
-    create = await profile_client.post(
-        "/api/education", json={"institution": "MIT", "degree": "BSc"}
-    )
+    create = await profile_client.post("/api/education", json={"institution": "MIT", "degree": "BSc"})
     edu_id = create.json()["id"]
     resp = await profile_client.put(f"/api/education/{edu_id}", json={"degree": "MSc"})
     assert resp.status_code == 200
@@ -85,9 +89,7 @@ async def test_update_education_404(profile_client: AsyncClient):
 
 @pytest.mark.asyncio
 async def test_delete_education(profile_client: AsyncClient):
-    create = await profile_client.post(
-        "/api/education", json={"institution": "MIT", "degree": "BSc"}
-    )
+    create = await profile_client.post("/api/education", json={"institution": "MIT", "degree": "BSc"})
     edu_id = create.json()["id"]
     resp = await profile_client.delete(f"/api/education/{edu_id}")
     assert resp.status_code == 204
@@ -96,6 +98,7 @@ async def test_delete_education(profile_client: AsyncClient):
 
 
 # ─── Certifications ───────────────────────────────────────────────────────────
+
 
 @pytest.mark.asyncio
 async def test_create_certification(profile_client: AsyncClient):
@@ -121,6 +124,7 @@ async def test_delete_certification_404(profile_client: AsyncClient):
 
 # ─── Experience ───────────────────────────────────────────────────────────────
 
+
 @pytest.mark.asyncio
 async def test_create_experience(profile_client: AsyncClient):
     resp = await profile_client.post(
@@ -135,7 +139,12 @@ async def test_create_experience(profile_client: AsyncClient):
 async def test_create_experience_invalid_dates(profile_client: AsyncClient):
     resp = await profile_client.post(
         "/api/experience",
-        json={"company": "Acme", "role": "Eng", "start_date": "2022-01-01", "end_date": "2021-01-01"},
+        json={
+            "company": "Acme",
+            "role": "Eng",
+            "start_date": "2022-01-01",
+            "end_date": "2021-01-01",
+        },
     )
     assert resp.status_code == 422
 
@@ -148,9 +157,7 @@ async def test_update_experience_404(profile_client: AsyncClient):
 
 @pytest.mark.asyncio
 async def test_delete_experience(profile_client: AsyncClient):
-    create = await profile_client.post(
-        "/api/experience", json={"company": "Acme", "role": "Eng"}
-    )
+    create = await profile_client.post("/api/experience", json={"company": "Acme", "role": "Eng"})
     exp_id = create.json()["id"]
     resp = await profile_client.delete(f"/api/experience/{exp_id}")
     assert resp.status_code == 204

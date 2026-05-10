@@ -1,9 +1,10 @@
 """Unit tests for LLMService."""
 
 import json
-import pytest
+from unittest.mock import AsyncMock, MagicMock, patch
+
 import httpx
-from unittest.mock import AsyncMock, patch, MagicMock
+import pytest
 
 from app.services.llm import LLMService, LLMTimeoutError, LLMUnavailableError
 

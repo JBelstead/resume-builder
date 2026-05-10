@@ -1,24 +1,30 @@
 """Unit tests for ResumeGenerator."""
 
 import json
+from unittest.mock import AsyncMock, patch
+
 import pytest
-from unittest.mock import AsyncMock, MagicMock, patch
-from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine, async_sessionmaker
+from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 
 from app.database import Base
 from app.models.profile import UserProfile
 from app.models.resume import Resume
-from app.services.resume_generator import ResumeGenerator, ResumeBuildError
+from app.services.resume_generator import ResumeBuildError, ResumeGenerator
 
 TEST_DB_URL = "sqlite+aiosqlite:///:memory:"
 
-VALID_LLM_OUTPUT = json.dumps({
-    "summary": "Experienced engineer with FastAPI expertise.",
-    "skills_to_emphasize": ["Python", "FastAPI", "Docker"],
-    "experience_highlights": ["Led migration to microservices", "Reduced latency by 40%"],
-    "job_title": "Senior Backend Engineer",
-    "company_name": "Acme Corp",
-})
+VALID_LLM_OUTPUT = json.dumps(
+    {
+        "summary": "Experienced engineer with FastAPI expertise.",
+        "skills_to_emphasize": ["Python", "FastAPI", "Docker"],
+        "experience_highlights": [
+            "Led migration to microservices",
+            "Reduced latency by 40%",
+        ],
+        "job_title": "Senior Backend Engineer",
+        "company_name": "Acme Corp",
+    }
+)
 
 
 @pytest.fixture
@@ -44,8 +50,16 @@ async def db_with_profile(db_session: AsyncSession):
 @pytest.mark.asyncio
 async def test_generate_creates_resume_record(db_with_profile: AsyncSession):
     with (
-        patch.object(ResumeGenerator, "_call_llm", new=AsyncMock(return_value=json.loads(VALID_LLM_OUTPUT))),
-        patch.object(ResumeGenerator, "_save_files", return_value=("/tmp/1/resume.pdf", "/tmp/1/resume.html")),
+        patch.object(
+            ResumeGenerator,
+            "_call_llm",
+            new=AsyncMock(return_value=json.loads(VALID_LLM_OUTPUT)),
+        ),
+        patch.object(
+            ResumeGenerator,
+            "_save_files",
+            return_value=("/tmp/1/resume.pdf", "/tmp/1/resume.html"),
+        ),
     ):
         generator = ResumeGenerator(db_with_profile)
         resume = await generator.generate("Software engineer role at Acme")
@@ -62,12 +76,17 @@ async def test_malformed_llm_json_raises_and_no_record_saved(db_session: AsyncSe
     db_session.add(profile)
     await db_session.commit()
 
-    with patch.object(ResumeGenerator, "_call_llm", new=AsyncMock(side_effect=ResumeBuildError("bad json"))):
+    with patch.object(
+        ResumeGenerator,
+        "_call_llm",
+        new=AsyncMock(side_effect=ResumeBuildError("bad json")),
+    ):
         generator = ResumeGenerator(db_session)
         with pytest.raises(ResumeBuildError):
             await generator.generate("some job")
 
     from sqlalchemy import select
+
     result = await db_session.execute(select(Resume))
     assert result.scalar_one_or_none() is None
 
@@ -87,7 +106,11 @@ async def test_experience_highlights_in_template_context(db_with_profile: AsyncS
     with (
         patch.object(ResumeGenerator, "_call_llm", new=AsyncMock(return_value=llm_data)),
         patch.object(ResumeGenerator, "_render_template", capture_render),
-        patch.object(ResumeGenerator, "_save_files", return_value=("/tmp/1/r.pdf", "/tmp/1/r.html")),
+        patch.object(
+            ResumeGenerator,
+            "_save_files",
+            return_value=("/tmp/1/r.pdf", "/tmp/1/r.html"),
+        ),
     ):
         generator = ResumeGenerator(db_with_profile)
         await generator.generate("Job description")

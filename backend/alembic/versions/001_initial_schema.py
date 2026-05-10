@@ -27,12 +27,8 @@ def upgrade() -> None:
         sa.Column("github_url", sa.String(500), nullable=True),
         sa.Column("linkedin_url", sa.String(500), nullable=True),
         sa.Column("website_url", sa.String(500), nullable=True),
-        sa.Column(
-            "created_at", sa.DateTime(), server_default=sa.func.now(), nullable=False
-        ),
-        sa.Column(
-            "updated_at", sa.DateTime(), server_default=sa.func.now(), nullable=False
-        ),
+        sa.Column("created_at", sa.DateTime(), server_default=sa.func.now(), nullable=False),
+        sa.Column("updated_at", sa.DateTime(), server_default=sa.func.now(), nullable=False),
     )
 
     op.create_table(
@@ -98,9 +94,7 @@ def upgrade() -> None:
         sa.Column("llm_output", sa.Text(), nullable=False),
         sa.Column("pdf_path", sa.String(1000), nullable=True),
         sa.Column("html_path", sa.String(1000), nullable=True),
-        sa.Column(
-            "created_at", sa.DateTime(), server_default=sa.func.now(), nullable=False
-        ),
+        sa.Column("created_at", sa.DateTime(), server_default=sa.func.now(), nullable=False),
     )
 
 

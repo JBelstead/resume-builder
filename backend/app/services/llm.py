@@ -1,7 +1,5 @@
 """Ollama HTTP client — all calls target localhost:11434 only."""
 
-import json
-
 import httpx
 
 from app.config import settings

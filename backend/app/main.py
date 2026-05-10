@@ -1,5 +1,5 @@
-from contextlib import asynccontextmanager
 from collections.abc import AsyncGenerator
+from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -12,8 +12,10 @@ from app.routers import certifications, education, experience, profile, resume
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     import asyncio
-    from alembic import command
+
     from alembic.config import Config
+
+    from alembic import command
 
     alembic_cfg = Config("alembic.ini")
     loop = asyncio.get_event_loop()

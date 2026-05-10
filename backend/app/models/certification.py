@@ -10,9 +10,7 @@ class Certification(Base):
     __tablename__ = "certifications"
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    user_profile_id: Mapped[int] = mapped_column(
-        ForeignKey("user_profiles.id"), nullable=False
-    )
+    user_profile_id: Mapped[int] = mapped_column(ForeignKey("user_profiles.id"), nullable=False)
     name: Mapped[str] = mapped_column(String(255), nullable=False)
     issuer: Mapped[str] = mapped_column(String(255), nullable=False)
     issue_date: Mapped[date] = mapped_column(Date, nullable=False)

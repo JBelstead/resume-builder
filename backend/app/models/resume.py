@@ -17,6 +17,4 @@ class Resume(Base):
     llm_output: Mapped[str] = mapped_column(Text, nullable=False)
     pdf_path: Mapped[str | None] = mapped_column(String(1000))
     html_path: Mapped[str | None] = mapped_column(String(1000))
-    created_at: Mapped[datetime] = mapped_column(
-        DateTime, server_default=func.now(), nullable=False
-    )
+    created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now(), nullable=False)

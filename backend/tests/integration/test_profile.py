@@ -1,11 +1,11 @@
 """Integration tests: full profile CRUD lifecycle."""
 
 import pytest
-from httpx import AsyncClient, ASGITransport
-from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine, async_sessionmaker
+from httpx import ASGITransport, AsyncClient
+from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 
-from app.main import app
 from app.database import Base, get_db
+from app.main import app
 
 TEST_DB_URL = "sqlite+aiosqlite:///:memory:"
 

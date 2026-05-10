@@ -1,25 +1,28 @@
 """Integration tests for resume generation (US2)."""
 
 import json
-import pytest
 from pathlib import Path
 from unittest.mock import AsyncMock, patch
-from httpx import AsyncClient, ASGITransport
-from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine, async_sessionmaker
 
-from app.main import app
+import pytest
+from httpx import ASGITransport, AsyncClient
+from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
+
 from app.database import Base, get_db
+from app.main import app
 from app.services.resume_generator import ResumeGenerator
 
 TEST_DB_URL = "sqlite+aiosqlite:///:memory:"
 
-VALID_LLM_OUTPUT = json.dumps({
-    "summary": "Strong Python developer with FastAPI expertise.",
-    "skills_to_emphasize": ["Python", "FastAPI"],
-    "experience_highlights": ["Built REST APIs serving 1M users"],
-    "job_title": "Backend Engineer",
-    "company_name": "Acme Corp",
-})
+VALID_LLM_OUTPUT = json.dumps(
+    {
+        "summary": "Strong Python developer with FastAPI expertise.",
+        "skills_to_emphasize": ["Python", "FastAPI"],
+        "experience_highlights": ["Built REST APIs serving 1M users"],
+        "job_title": "Backend Engineer",
+        "company_name": "Acme Corp",
+    }
+)
 
 
 @pytest.fixture
@@ -48,7 +51,10 @@ async def client(session: AsyncSession):
 @pytest.fixture
 async def client_with_profile(client: AsyncClient):
     await client.put("/api/profile", json={"name": "Jane Smith", "email": "jane@example.com"})
-    await client.post("/api/experience", json={"company": "Acme", "role": "Engineer", "start_date": "2020-01-01"})
+    await client.post(
+        "/api/experience",
+        json={"company": "Acme", "role": "Engineer", "start_date": "2020-01-01"},
+    )
     return client
 
 
@@ -75,11 +81,19 @@ async def test_generate_returns_400_message_exact(client: AsyncClient):
 @pytest.mark.asyncio
 async def test_generate_creates_resume_record(client_with_profile: AsyncClient, tmp_path: Path):
     with (
-        patch.object(ResumeGenerator, "_call_llm", new=AsyncMock(return_value=json.loads(VALID_LLM_OUTPUT))),
-        patch.object(ResumeGenerator, "_save_files", return_value=(
-            str(tmp_path / "1" / "resume.pdf"),
-            str(tmp_path / "1" / "resume.html"),
-        )),
+        patch.object(
+            ResumeGenerator,
+            "_call_llm",
+            new=AsyncMock(return_value=json.loads(VALID_LLM_OUTPUT)),
+        ),
+        patch.object(
+            ResumeGenerator,
+            "_save_files",
+            return_value=(
+                str(tmp_path / "1" / "resume.pdf"),
+                str(tmp_path / "1" / "resume.html"),
+            ),
+        ),
     ):
         resp = await client_with_profile.post(
             "/api/resume/generate",

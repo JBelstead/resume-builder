@@ -1,11 +1,11 @@
 """Unit tests for profile, education, certification, and experience routers."""
 
 import pytest
-from httpx import AsyncClient, ASGITransport
-from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine, async_sessionmaker
+from httpx import ASGITransport, AsyncClient
+from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 
-from app.main import app
 from app.database import Base, get_db
+from app.main import app
 
 TEST_DB_URL = "sqlite+aiosqlite:///:memory:"
 
@@ -41,6 +41,7 @@ async def with_profile(client: AsyncClient):
 
 # ─── Profile router ───────────────────────────────────────────────────────────
 
+
 @pytest.mark.asyncio
 async def test_health(client: AsyncClient):
     resp = await client.get("/api/health")
@@ -66,6 +67,7 @@ async def test_profile_upsert(client: AsyncClient):
 
 # ─── Education router ─────────────────────────────────────────────────────────
 
+
 @pytest.mark.asyncio
 async def test_education_crud(with_profile: AsyncClient):
     c = with_profile
@@ -80,6 +82,7 @@ async def test_education_crud(with_profile: AsyncClient):
 
 # ─── Certifications router ────────────────────────────────────────────────────
 
+
 @pytest.mark.asyncio
 async def test_certification_crud(with_profile: AsyncClient):
     c = with_profile
@@ -92,6 +95,7 @@ async def test_certification_crud(with_profile: AsyncClient):
 
 
 # ─── Experience router ────────────────────────────────────────────────────────
+
 
 @pytest.mark.asyncio
 async def test_experience_crud(with_profile: AsyncClient):

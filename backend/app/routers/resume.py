@@ -9,7 +9,12 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.database import get_db
 from app.models.profile import UserProfile
 from app.models.resume import Resume
-from app.schemas.resume import ResumeCreateResponse, ResumeGenerateRequest, ResumeListItem, ResumeResponse
+from app.schemas.resume import (
+    ResumeCreateResponse,
+    ResumeGenerateRequest,
+    ResumeListItem,
+    ResumeResponse,
+)
 from app.services.job_parser import JobParser, JobURLError
 from app.services.llm import LLMTimeoutError, LLMUnavailableError
 from app.services.resume_generator import ResumeBuildError, ResumeGenerator
@@ -18,9 +23,7 @@ router = APIRouter(tags=["resume"])
 
 
 @router.post("/resume/generate", response_model=ResumeCreateResponse, status_code=201)
-async def generate_resume(
-    data: ResumeGenerateRequest, db: AsyncSession = Depends(get_db)
-) -> Resume:
+async def generate_resume(data: ResumeGenerateRequest, db: AsyncSession = Depends(get_db)) -> Resume:
     result = await db.execute(select(UserProfile).limit(1))
     if not result.scalar_one_or_none():
         raise HTTPException(

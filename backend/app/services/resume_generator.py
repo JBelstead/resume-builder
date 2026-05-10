@@ -1,7 +1,6 @@
 """Orchestrates LLM call → Jinja2 render → WeasyPrint PDF."""
 
 import json
-import os
 from pathlib import Path
 
 from jinja2 import Environment, FileSystemLoader, select_autoescape
@@ -79,19 +78,37 @@ class ResumeGenerator:
             raise ResumeBuildError("no_profile")
 
         educations = list(
-            (await self._db.execute(
-                select(Education).where(Education.user_profile_id == profile.id).order_by(Education.start_date.desc())
-            )).scalars().all()
+            (
+                await self._db.execute(
+                    select(Education)
+                    .where(Education.user_profile_id == profile.id)
+                    .order_by(Education.start_date.desc())
+                )
+            )
+            .scalars()
+            .all()
         )
         certifications = list(
-            (await self._db.execute(
-                select(Certification).where(Certification.user_profile_id == profile.id).order_by(Certification.issue_date.desc())
-            )).scalars().all()
+            (
+                await self._db.execute(
+                    select(Certification)
+                    .where(Certification.user_profile_id == profile.id)
+                    .order_by(Certification.issue_date.desc())
+                )
+            )
+            .scalars()
+            .all()
         )
         experiences = list(
-            (await self._db.execute(
-                select(WorkExperience).where(WorkExperience.user_profile_id == profile.id).order_by(WorkExperience.start_date.desc())
-            )).scalars().all()
+            (
+                await self._db.execute(
+                    select(WorkExperience)
+                    .where(WorkExperience.user_profile_id == profile.id)
+                    .order_by(WorkExperience.start_date.desc())
+                )
+            )
+            .scalars()
+            .all()
         )
         return profile, educations, certifications, experiences
 
@@ -115,16 +132,17 @@ class ResumeGenerator:
                 for e in experiences
             ],
             "education": [
-                {"institution": ed.institution, "degree": ed.degree, "field": ed.field_of_study or ""}
+                {
+                    "institution": ed.institution,
+                    "degree": ed.degree,
+                    "field": ed.field_of_study or "",
+                }
                 for ed in educations
             ],
-            "certifications": [
-                {"name": c.name, "issuer": c.issuer} for c in certifications
-            ],
+            "certifications": [{"name": c.name, "issuer": c.issuer} for c in certifications],
         }
         user_message = (
-            f"--- PROFILE ---\n{json.dumps(profile_data, indent=2)}\n\n"
-            f"--- JOB DESCRIPTION ---\n{job_description}"
+            f"--- PROFILE ---\n{json.dumps(profile_data, indent=2)}\n\n--- JOB DESCRIPTION ---\n{job_description}"
         )
         raw = await self._llm.generate(_SYSTEM_PROMPT, user_message)
         try:

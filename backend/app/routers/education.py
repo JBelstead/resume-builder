@@ -22,17 +22,13 @@ async def _require_profile(db: AsyncSession) -> UserProfile:
 async def list_education(db: AsyncSession = Depends(get_db)) -> list[Education]:
     profile = await _require_profile(db)
     result = await db.execute(
-        select(Education)
-        .where(Education.user_profile_id == profile.id)
-        .order_by(Education.start_date.desc())
+        select(Education).where(Education.user_profile_id == profile.id).order_by(Education.start_date.desc())
     )
     return list(result.scalars().all())
 
 
 @router.post("/education", response_model=EducationResponse, status_code=201)
-async def create_education(
-    data: EducationCreate, db: AsyncSession = Depends(get_db)
-) -> Education:
+async def create_education(data: EducationCreate, db: AsyncSession = Depends(get_db)) -> Education:
     profile = await _require_profile(db)
     entry = Education(user_profile_id=profile.id, **data.model_dump())
     db.add(entry)
@@ -42,9 +38,7 @@ async def create_education(
 
 
 @router.put("/education/{entry_id}", response_model=EducationResponse)
-async def update_education(
-    entry_id: int, data: EducationUpdate, db: AsyncSession = Depends(get_db)
-) -> Education:
+async def update_education(entry_id: int, data: EducationUpdate, db: AsyncSession = Depends(get_db)) -> Education:
     result = await db.execute(select(Education).where(Education.id == entry_id))
     entry = result.scalar_one_or_none()
     if not entry:

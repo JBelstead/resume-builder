@@ -19,9 +19,7 @@ async def get_profile(db: AsyncSession = Depends(get_db)) -> UserProfile:
 
 
 @router.put("/profile", response_model=ProfileResponse)
-async def upsert_profile(
-    data: ProfileCreate, db: AsyncSession = Depends(get_db)
-) -> UserProfile:
+async def upsert_profile(data: ProfileCreate, db: AsyncSession = Depends(get_db)) -> UserProfile:
     result = await db.execute(select(UserProfile).limit(1))
     profile = result.scalar_one_or_none()
     if profile:

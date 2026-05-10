@@ -10,9 +10,7 @@ class WorkExperience(Base):
     __tablename__ = "work_experiences"
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    user_profile_id: Mapped[int] = mapped_column(
-        ForeignKey("user_profiles.id"), nullable=False
-    )
+    user_profile_id: Mapped[int] = mapped_column(ForeignKey("user_profiles.id"), nullable=False)
     company: Mapped[str] = mapped_column(String(255), nullable=False)
     role: Mapped[str] = mapped_column(String(255), nullable=False)
     start_date: Mapped[date] = mapped_column(Date, nullable=False)

@@ -1,8 +1,9 @@
 """Unit tests for JobParser."""
 
-import pytest
-import httpx
 from unittest.mock import AsyncMock, MagicMock, patch
+
+import httpx
+import pytest
 
 from app.services.job_parser import JobParser, JobURLError
 

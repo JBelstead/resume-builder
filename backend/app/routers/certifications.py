@@ -5,7 +5,11 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.database import get_db
 from app.models.certification import Certification
 from app.models.profile import UserProfile
-from app.schemas.certification import CertificationCreate, CertificationResponse, CertificationUpdate
+from app.schemas.certification import (
+    CertificationCreate,
+    CertificationResponse,
+    CertificationUpdate,
+)
 
 router = APIRouter(tags=["certifications"])
 
@@ -19,7 +23,9 @@ async def _require_profile(db: AsyncSession) -> UserProfile:
 
 
 @router.get("/certifications", response_model=list[CertificationResponse])
-async def list_certifications(db: AsyncSession = Depends(get_db)) -> list[Certification]:
+async def list_certifications(
+    db: AsyncSession = Depends(get_db),
+) -> list[Certification]:
     profile = await _require_profile(db)
     result = await db.execute(
         select(Certification)
@@ -30,9 +36,7 @@ async def list_certifications(db: AsyncSession = Depends(get_db)) -> list[Certif
 
 
 @router.post("/certifications", response_model=CertificationResponse, status_code=201)
-async def create_certification(
-    data: CertificationCreate, db: AsyncSession = Depends(get_db)
-) -> Certification:
+async def create_certification(data: CertificationCreate, db: AsyncSession = Depends(get_db)) -> Certification:
     profile = await _require_profile(db)
     entry = Certification(user_profile_id=profile.id, **data.model_dump())
     db.add(entry)
